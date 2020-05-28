@@ -1,2 +1,18 @@
-# boilerplate
-make boilerplate
+<<<<<<< HEAD
+
+안녕하세요!
+이 프로젝트는 기초부터 시작하여 boilerplate을 만드는 프로젝트입니다.
+로그인 / 회원가입과 같은 기능은 어디에도 들어갑니다.
+즉, 어떤 프로젝트를 시작할 때, 이러한 기능을 처음부터 만드는 것이 아니라 재사용할 수 있게 만들어 놓는 것을 boilerplate이라 합니다.
+해당 프로젝트를 통해 재사용 가능한 템플릿을 만드는 것이 목적입니다.
+
+쓰여진 기술은 다음과 같습니다.
+
+	front-end : React.js
+	back-end : Node.js & MongoDB
+
+어플리케이션을 실행시킬 때 발생하는 문제나, 코드에 대한 의문점 및 개선 사항에 대한 의견은 다음의 연락처로 문의 바랍니다!
+
+e-mail : kim031504@naver.com
+
+>>>>>>> 7fc45acd9c9ad9acafadc7177275c8d5d9bddac8

@@ -5,9 +5,11 @@ const bodyParser = require('body-parser');
 
 const { BoilerplateUser } = require('./models/BoilerplateUser');
 
+const config = require('./config/key');
+
 /* 몽고DB 연결 */
 const mongoose = require('mongoose');
-const mongoURI = 'mongodb+srv://kyomin:0603@youtubeclone-fwhcj.mongodb.net/test?retryWrites=true&w=majority'
+const mongoURI = config.mongoURI;
 mongoose.connect(mongoURI, {
     useNewUrlParser: true,
     useUnifiedTopology: true,

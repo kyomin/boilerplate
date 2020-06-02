@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
+const jwt = require('jsonwebtoken');
 
 const boilerplateUserSchema = mongoose.Schema({
     name: {
@@ -36,7 +37,8 @@ const boilerplateUserSchema = mongoose.Schema({
 // 해당 스키마의 저장(save) 작업 전에 할 작업을 지정한다. next를 호출하면 save 작업으로 이동한다.
 boilerplateUserSchema.pre('save', function( next ){
 
-    // user는 boilerplateUserSchema를 가리키게 된다. 그래서 각 필드에 접근할 수 있다.
+    // user는 boilerplateUserSchema를 가리키게 된다. 
+    // 그래서 각 필드에 접근할 수 있다.
     var user = this;
 
     // password만 변경될 때 암호화 실행!
@@ -53,11 +55,42 @@ boilerplateUserSchema.pre('save', function( next ){
 
                 // 성공했으면 해시값으로 바뀌므로 이를 대체해준다.
                 user.password = hash;
+
+                // 해당 작업 빠져 나와서 다음으로 진행
                 next();
             });
         });
+    } else {    // 다른 것을 수정하려 한다면
+        next();     // 바로 다음으로 진행
     }
 });
+
+/* 모델 내부에 메소드를 정의한다. */
+boilerplateUserSchema.methods.comparePassword = function(plainPassword, cb) {
+    // plainPassword : 70017621    암호화된 비밀번호 : $2b$10$O6VcgV8tPRlb6.b626WlTej63WxJLRnAj9/SWDeMnnFwFm8Kq6vyu
+    // 위의 2개가 같은지 확인해야 한다. => plainPassword를 암호화 한 후에 비교한다.(복호화 불가능)
+    bcrypt.compare(plainPassword, this.password, function(err, isMatch) {
+        if(err) return cb(err);
+
+        cb(null, isMatch);
+    });
+}
+
+boilerplateUserSchema.methods.createToken = function(cb) {
+    var user = this;
+    
+    // jsonwebtoken을 이용해서 토큰을 생성하기
+    // user._id + 'secretToken' = token이 되고,
+    // 'secretToken' -> user._id를 뽑아낸다.
+    var token = jwt.sign(user._id.toHexString(), 'secretToken');
+
+    user.token = token;
+    user.save(function(err, user) {
+        if(err) return cb(err);
+
+        cb(null, user);
+    })
+}
 
 // 스키마를 모델로 감싼다.
 const BoilerplateUser = mongoose.model("BoilerplateUser", boilerplateUserSchema);

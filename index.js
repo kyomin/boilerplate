@@ -3,6 +3,7 @@ const app = express();                // 즉, 함수 호출을 통해서 app에 
 const port = 5000;
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
+const auth = require('./middleware/auth');
 
 const { BoilerplateUser } = require('./models/BoilerplateUser');
 
@@ -27,13 +28,12 @@ app.use(bodyParser.json());     // application/json
 app.use(cookieParser()); 
 
 
-
 /* 라우터 설정! */
 app.get('/', (req, res) => {
-    res.send('Hello World!');
+    res.send(`Hello Kyomin's Server!`);
 });
 
-app.post('/register', (req, res) => {
+app.post('/api/users/register', (req, res) => {
     // 회원 가입 시에 필요한 정보들을 client에서 가져오면
     // 그것들을 데이터베이스에 넣어준다.
     const user = new BoilerplateUser(req.body);
@@ -47,7 +47,7 @@ app.post('/register', (req, res) => {
     });
 });
 
-app.post('/login', (req, res) => {
+app.post('/api/users/login', (req, res) => {
     // 요청된 이메일을 데이터베이스에서 있는지 찾는다.
     BoilerplateUser.findOne({ email: req.body.email }, (err, user) => {
         if(!user) {
@@ -84,7 +84,26 @@ app.post('/login', (req, res) => {
         });
     });
 });
-  
+
+// 중간의 인자는 미들웨어(함수, auth)가 들어가는 부분이다.
+// role : 0 => 일반 유저, 0이 아니면 관리자. 이는 하나의 정책이다.
+app.get('/api/users/auth', auth , (req, res) => {
+    // 여기까지 오면 미들웨어를 통과해 왔다는 얘기이다.
+    // 즉, 인증처리가 완료되었다는 말이다.
+    res.status(200).json({
+        _id: req.user._id,
+        isAdmin: req.user.role === 0 ? false : true,
+        isAuth: true,
+        email: req.user.email,
+        name: req.user.name,
+        lastname: req.user.lastname,
+        role: req.user.role,
+        image: req.user.image
+    });
+});
+
+
+/* 서버 열기! */
 app.listen(port, () => {
     console.log(`app listening on port ${port}!`);
 });

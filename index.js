@@ -3,7 +3,7 @@ const app = express();                // 즉, 함수 호출을 통해서 app에 
 const port = 5000;
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
-const auth = require('./middleware/auth');
+const { auth } = require('./middleware/auth');
 
 const { BoilerplateUser } = require('./models/BoilerplateUser');
 
@@ -87,7 +87,7 @@ app.post('/api/users/login', (req, res) => {
 
 // 중간의 인자는 미들웨어(함수, auth)가 들어가는 부분이다.
 // role : 0 => 일반 유저, 0이 아니면 관리자. 이는 하나의 정책이다.
-app.get('/api/users/auth', auth , (req, res) => {
+app.get('/api/users/auth', auth, (req, res) => {
     // 여기까지 오면 미들웨어를 통과해 왔다는 얘기이다.
     // 즉, 인증처리가 완료되었다는 말이다.
     res.status(200).json({
@@ -99,6 +99,23 @@ app.get('/api/users/auth', auth , (req, res) => {
         lastname: req.user.lastname,
         role: req.user.role,
         image: req.user.image
+    });
+});
+
+app.get('/api/users/logout', auth, (req, res) => {
+    // 첫 번째 인자는 찾기 위해 넣어줄 어트리뷰트 값
+    // 두 번째 인자는 찾은 후에 바꿔줄 어트리뷰트
+    BoilerplateUser.findOneAndUpdate(
+    { _id: req.user._id }, 
+    { token: "" },      // DB의 토큰을 지워준다.
+    (err, user) => {
+        // 실패 시
+        if(err) return res.json({ success: false, err });
+
+        // 성공 시
+        return res.status(200).json({
+            success: true
+        });
     });
 });
 

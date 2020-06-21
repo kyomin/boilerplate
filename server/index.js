@@ -66,6 +66,8 @@ app.post('/api/users/login', (req, res) => {
                 })
             }
 
+            /* 위에서 비밀번호가 틀려서 응답을 보내도 종료가 안 되고 밑에 실행! */
+
             // 비밀번호까지 맞다면(위의 과정을 통과했다면) 유저를 위한 '토큰' 생성!
             user.createToken((err, user) => {
                 if(err) return res.status(400).send(err);

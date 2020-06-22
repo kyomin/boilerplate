@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState } from 'react';
 import axios from 'axios';
 import { useDispatch } from 'react-redux';
 import { loginUser } from '../../../_actions/user_action';
@@ -33,13 +33,7 @@ function LoginPage(props) {
             } else {
                 alert('Error!');
             }
-        })
-
-        axios.post('/api/users/login', body)
-        .then(response => {
-            console.log(response);
         });
-       
     }
 
     return (

@@ -4,11 +4,9 @@ const { createProxyMiddleware } = require('http-proxy-middleware');
 // 실제 : http://localhost:5000/api/**
 module.exports = function(app) {
   app.use(
-    '/api',
-    createProxyMiddleware({
-      target: 'https://localhost:5000',
-      "secure": false,
-      changeOrigin: true,
+    createProxyMiddleware('/api', {
+        target: 'http://localhost:5000/',
+        changeOrigin: true
     })
-  );
+  )
 };

@@ -1,6 +1,5 @@
 const express = require('express');   // express 모듈이 export 하는 것은 서버 제작 기능이 담긴 객체를 반환하는 함수일 것이다.
 const app = express();                // 즉, 함수 호출을 통해서 app에 객체를 받는다.
-const port = 5000;
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const { auth } = require('./middleware/auth');
@@ -123,6 +122,8 @@ app.get('/api/users/logout', auth, (req, res) => {
 
 
 /* 서버 열기! */
+const port = 5000;
+
 app.listen(port, () => {
     console.log(`app listening on port ${port}!`);
 });
